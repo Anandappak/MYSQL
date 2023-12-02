@@ -1,0 +1,51 @@
+Here is an example of how you can create a simple event in MySQL:
+
+Enable the Event Scheduler:
+
+The Event Scheduler is disabled by default. To enable it, you can add the following line to your MySQL configuration file (usually my.cnf or my.ini), or you can run it as a SQL query in your MySQL client:
+
+sql
+Copy code
+SET GLOBAL event_scheduler = ON;
+This command enables the Event Scheduler for the current session. To make it permanent, add the line to your configuration file and restart MySQL.
+
+Create a Simple Event:
+
+Let's say you want to create an event that inserts a record into a table every day at a specific time.
+
+sql
+Copy code
+DELIMITER //
+
+CREATE EVENT my_daily_event
+ON SCHEDULE
+  EVERY 1 DAY
+  STARTS '2023-01-01 00:00:00'
+COMMENT 'Insert a record into my_table every day' 
+DO
+BEGIN
+  INSERT INTO my_table (column1, column2) VALUES ('value1', 'value2');
+END//
+
+DELIMITER ;
+In this example:
+
+my_daily_event is the name of the event.
+EVERY 1 DAY specifies that the event will occur every day.
+STARTS '2023-01-01 00:00:00' sets the start date and time of the event.
+The BEGIN and END block contains the SQL statements to be executed.
+Adjust the table name, column names, values, and schedule according to your requirements.
+
+Viewing and Managing Events:
+
+You can view the existing events by executing the following query:
+
+sql
+Copy code
+SHOW EVENTS;
+To drop (delete) an event, you can use the DROP EVENT statement:
+
+sql
+Copy code
+DROP EVENT my_daily_event;
+Replace my_daily_event with the name of the event you want to drop.
