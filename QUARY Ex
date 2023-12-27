@@ -1,0 +1,11 @@
+ex : 1 
+SELECT id, MIN(date) AS date, MIN(name) AS name
+FROM table
+GROUP BY id;
+
+ex: 2
+SELECT id, MAX(date) AS max_date, name
+FROM table
+GROUP BY id, name;
+
+ex : 3
