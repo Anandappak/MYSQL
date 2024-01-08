@@ -9,3 +9,11 @@ FROM table
 GROUP BY id, name;
 
 ex : 3
+SELECT * 
+FROM your_table
+ORDER BY your_column
+LIMIT 10 OFFSET 20;
+
+ex: 4
+
+
