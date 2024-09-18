@@ -1,0 +1,98 @@
+
+hbb
+To install MySQL on Ubuntu 22.04 without an internet connection, you can follow these steps using the MySQL binary package. You’ll need to first download the binary package on another machine with an internet connection, transfer it to your Ubuntu system, and then install it. Here's how you can do that:
+
+### 1. **Download the MySQL Binary Package**
+   - From a machine with an internet connection, visit the official MySQL downloads page:
+     [MySQL Downloads](https://dev.mysql.com/downloads/mysql/).
+   - Choose the Linux (Generic) version, select the correct architecture (e.g., x86_64 for 64-bit systems), and download the MySQL Community Server TAR file.
+
+### 2. **Transfer the Binary File**
+   - Once downloaded, transfer the file to your Ubuntu machine. You can use a USB drive or any other method to move the binary file.
+
+### 3. **Install MySQL from Binary**
+   Follow these steps to install MySQL from the binary package:
+
+   1. **Unpack the TAR file**:
+      Open the terminal and navigate to the directory where you transferred the file, then unpack it:
+      ```bash
+      tar -xvf mysql-8.0.XX-linux-glibc2.12-x86_64.tar.xz
+      ```
+
+   2. **Move the Files**:
+      Move the extracted MySQL directory to `/usr/local/` or another preferred directory:
+      ```bash
+      sudo mv mysql-8.0.XX-linux-glibc2.12-x86_64 /usr/local/mysql
+      ```
+
+   3. **Create a MySQL User**:
+      For security reasons, it’s a good practice to create a separate MySQL user:
+      ```bash
+      sudo groupadd mysql
+      sudo useradd -r -g mysql -s /bin/false mysql
+      ```
+
+   4. **Set Ownership of Files**:
+      Set ownership of the MySQL installation directory to the MySQL user:
+      ```bash
+      sudo chown -R mysql:mysql /usr/local/mysql
+      ```
+
+   5. **Initialize MySQL**:
+      Run the following command to initialize the MySQL data directory and system databases:
+      ```bash
+      sudo /usr/local/mysql/bin/mysqld --initialize --user=mysql
+      ```
+
+   6. **Start MySQL Server**:
+      Start the MySQL server using the following command:
+      ```bash
+      sudo /usr/local/mysql/bin/mysqld_safe --user=mysql &
+      ```
+
+   7. **Set Up MySQL as a Service (Optional)**:
+      To run MySQL as a service, you can create a service file for systemd:
+      ```bash
+      sudo nano /etc/systemd/system/mysql.service
+      ```
+      Add the following content to the file:
+      ```ini
+      [Unit]
+      Description=MySQL Server
+      After=network.target
+
+      [Service]
+      User=mysql
+      Group=mysql
+      ExecStart=/usr/local/mysql/bin/mysqld --user=mysql
+      LimitNOFILE=5000
+
+      [Install]
+      WantedBy=multi-user.target
+      ```
+      Save and close the file. Then enable and start the MySQL service:
+      ```bash
+      sudo systemctl enable mysql
+      sudo systemctl start mysql
+      ```
+
+   8. **Configure MySQL Client**:
+      Add MySQL binaries to your system’s PATH by editing your `.bashrc` or `.bash_profile` file:
+      ```bash
+      echo 'export PATH=/usr/local/mysql/bin:$PATH' >> ~/.bashrc
+      source ~/.bashrc
+      ```
+
+   9. **Secure MySQL Installation**:
+      Run the `mysql_secure_installation` script to configure MySQL security settings:
+      ```bash
+      sudo /usr/local/mysql/bin/mysql_secure_installation
+      ```
+
+### 4. **Verify the Installation**
+   Log in to MySQL to verify that it’s working correctly:
+   ```bash
+   /usr/local/mysql/bin/mysql -u root -p
+   ```
+
+You now have MySQL installed on your Ubuntu machine without an internet connection.
