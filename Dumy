@@ -96,3 +96,87 @@ To install MySQL on Ubuntu 22.04 without an internet connection, you can follow 
    ```
 
 You now have MySQL installed on your Ubuntu machine without an internet connection.
+
+
+
+
+sec
+To install MySQL on an **offline Ubuntu 22.04.4** system, you'll need to manually download the required packages (binaries) from a system with internet access, transfer them to your Ubuntu system, and then install them. Here’s the best approach for installing MySQL without internet access:
+
+### Step-by-Step Guide:
+
+#### 1. **Download MySQL Server Binaries**
+   On a system that has internet access:
+   - Visit the official MySQL downloads page: [MySQL Downloads](https://dev.mysql.com/downloads/mysql/).
+   - Select **Ubuntu** and choose the version that matches your architecture (e.g., 64-bit x86).
+   - Download the following essential `.deb` packages:
+     - `mysql-server`
+     - `mysql-client`
+     - `libmysqlclient-dev`
+     - Any other dependencies required (you can check these in the downloaded package information).
+
+   Alternatively, you can get the tarball binaries:
+   - Go to the [MySQL Downloads - MySQL Community Server](https://dev.mysql.com/downloads/mysql/).
+   - Download the **Generic Linux** tarball.
+
+#### 2. **Transfer Packages to the Offline System**
+   - Use a USB drive, external hard drive, or any other method to transfer the downloaded `.deb` or tarball files to your Ubuntu machine.
+
+#### 3. **Install the MySQL Server from Binaries**
+
+   **Option 1: Using `.deb` Packages**
+
+   - Open the terminal and navigate to the directory where you've stored the `.deb` files.
+   - Run the following commands:
+     ```bash
+     sudo dpkg -i *.deb
+     ```
+     This will install all `.deb` files in that directory. If there are any missing dependencies, the installation will fail. You will need to manually download those missing dependencies from the internet and transfer them as well.
+
+   **Option 2: Using a Tarball**
+
+   - Extract the tarball:
+     ```bash
+     tar -xvf mysql-<version>-linux-glibc2.12-x86_64.tar.xz
+     ```
+   - Move the extracted folder to `/usr/local`:
+     ```bash
+     sudo mv mysql-<version>-linux-glibc2.12-x86_64 /usr/local/mysql
+     ```
+   - Create a MySQL user:
+     ```bash
+     sudo groupadd mysql
+     sudo useradd -r -g mysql -s /bin/false mysql
+     ```
+   - Change ownership of the MySQL directory:
+     ```bash
+     sudo chown -R mysql:mysql /usr/local/mysql
+     ```
+   - Run the installation script:
+     ```bash
+     cd /usr/local/mysql
+     sudo scripts/mysql_install_db --user=mysql
+     sudo chown -R root .
+     sudo chown -R mysql data
+     ```
+   - Start the MySQL server:
+     ```bash
+     sudo bin/mysqld_safe --user=mysql &
+     ```
+
+#### 4. **Configure MySQL**
+
+   - After installing, secure your MySQL installation by running:
+     ```bash
+     sudo /usr/local/mysql/bin/mysql_secure_installation
+     ```
+
+#### 5. **Set Up MySQL to Start on Boot (Optional)**
+
+   - You can set up MySQL to start on boot by creating a service file:
+     ```bash
+     sudo cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql
+     sudo update-rc.d mysql defaults
+     ```
+
+Now, MySQL should be installed and running on your Ubuntu 22.04.4 system without requiring an internet connection.
